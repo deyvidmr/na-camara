@@ -8,12 +8,12 @@ models:
         tests: [unique, not_null]
       - name: tipo
         description: >
-          texto_principal, destaque, emenda, urgencia, requerimento, procedimento, redacao_final ou outro.
+          texto_principal, texto_senado (mudanças do Senado), destaque, emenda, urgencia, requerimento, procedimento, redacao_final ou outro.
           Classificado por regras sobre a descrição; "outro" é candidato à classificação por IA.
         tests:
           - not_null
           - accepted_values:
-              values: [texto_principal, destaque, emenda, urgencia, requerimento, procedimento, redacao_final, outro]
+              values: [texto_principal, texto_senado, destaque, emenda, urgencia, requerimento, procedimento, redacao_final, outro]
       - name: nominal
         description: A Câmara registrou o voto de cada deputado. Votações simbólicas têm só o resultado.
         tests: [not_null]
@@ -48,3 +48,38 @@ models:
         tests:
           - accepted_values:
               values: [descricao, descricao_renumerado, descricao_sem_id, registro_camara]
+
+  - name: proposicao
+    columns:
+      - name: proposicao_id
+        tests: [unique, not_null]
+
+  - name: proposicao_tema
+    columns:
+      - name: proposicao_tema_id
+        tests: [unique, not_null]
+
+  - name: deputado
+    columns:
+      - name: deputado_id
+        tests: [unique, not_null]
+
+  - name: orientacao
+    columns:
+      - name: orientacao_id
+        tests: [unique, not_null]
+      - name: tipo_bancada
+        description: Nulo quando a bancada não está em editorial.bancada_partido.
+        tests:
+          - not_null:
+              config:
+                severity: error
+      - name: orientacao
+        tests:
+          - accepted_values:
+              values: [sim, nao, obstrucao, liberado]
+
+  - name: orientacao_partido
+    columns:
+      - name: orientacao_partido_id
+        tests: [unique, not_null]

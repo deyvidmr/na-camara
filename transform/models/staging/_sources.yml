@@ -9,3 +9,8 @@ sources:
       - name: votacoes_votos
       - name: votacoes_proposicoes
       - name: proposicoes
+      - name: proposicoes_temas
+      - name: proposicoes_autores
+      - name: deputados
+      - name: votacoes_orientacoes
+      - name: ref_proposicoes_cod_tema

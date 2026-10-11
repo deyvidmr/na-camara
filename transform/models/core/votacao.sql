@@ -26,9 +26,16 @@ select
     vo.votacao_id is not null                       as nominal,
     -- secreta: registra quem participou, mas não o voto (ex.: indicação de autoridades)
     coalesce(vo.votos_ocultos = vo.participantes, false) as secreta,
+    -- A ordem importa: o texto principal costuma terminar com "ressalvados os destaques",
+    -- então ele é reconhecido antes da regra genérica de destaque.
     case
-        when v.descricao ~* '^\s*(mantid|suprimid)[oa]s? o texto'
-          or v.descricao ~* 'destaque'                         then 'destaque'
+        when v.descricao ~* '^\s*(mantid|suprimid)[oa]s? o texto'  then 'destaque'
+        -- projeto que voltou do Senado: a Câmara decide sobre as mudanças feitas lá
+        when v.descricao ~* '^\s*(aprovad|rejeitad)[oa]s?,?( em (primeiro|segundo) turno,)? (o|a|os|as) (substitutivo|emendas?|dispositivos do substitutivo) do senado'
+                                                               then 'texto_senado'
+        when v.descricao ~* '^\s*(aprovad|rejeitad)[oa]s?,?( em (primeiro|segundo) turno,)? (o|a|os|as) (projeto|proposta|substitutivo|subemenda substitutiva|medida provis|emenda aglutinativa substitutiva)'
+                                                               then 'texto_principal'
+        when v.descricao ~* 'destaque'                         then 'destaque'
         when v.descricao ~* 'urg[êe]ncia'
          and v.descricao ~* 'requerimento'                     then 'urgencia'
         when v.descricao ~* 'reda[çc][ãa]o final'              then 'redacao_final'
@@ -36,8 +43,6 @@ select
         -- preferência, recursos, inclusão em pauta e admissibilidade de MP: decisões sobre o andamento
         when v.descricao ~* '^\s*(aprovad|rejeitad)[oa]s? (a prefer[êe]ncia|o recurso|a inclus[ãa]o)'
           or v.descricao ~* 'aprecia[çc][ãa]o preliminar'      then 'procedimento'
-        when v.descricao ~* '^\s*(aprovad|rejeitad)[oa]s?,?( em (primeiro|segundo) turno,)? (o|a|os|as) (projeto|proposta|substitutivo|subemenda substitutiva|medida provis|emenda aglutinativa substitutiva|dispositivos do substitutivo)'
-                                                               then 'texto_principal'
         when v.descricao ~* '^\s*(aprovad|rejeitad)[oa]s? (a|as) emenda'
                                                                then 'emenda'
         else 'outro'

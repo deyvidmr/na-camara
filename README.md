@@ -28,6 +28,11 @@ O pipeline roda todo dia às 04:00 (Brasília) via cron (`deploy/cron-coletor`).
 - Votações secretas registram quem participou, mas não o voto.
 - "Sim" responde à pergunta de cada votação: num destaque pode significar manter um trecho.
   Por isso cada votação tem um `tipo` (texto principal, destaque, urgência...).
+- Projetos que voltam do Senado têm votações das mudanças do Senado (`texto_senado`), separadas
+  do texto principal votado pela Câmara.
+- Orientações vêm por bloco, com nomes cortados ("Bl UniPpFdrPsdbCid..."). A composição de cada bloco
+  está em `editorial.bancada_partido`, com a origem de cada partido: nome do bloco, API ou inferido
+  dos dados (partido que nunca orientou separado enquanto o bloco existiu).
 - Teste: o placar oficial bate com a soma dos votos individuais em todas as votações não secretas.
 
 ## Camadas do banco
@@ -36,8 +41,8 @@ O pipeline roda todo dia às 04:00 (Brasília) via cron (`deploy/cron-coletor`).
 |---|---|
 | `raw` | Arquivos da Câmara como vieram (tudo texto) + registro de cargas em `raw.carga` |
 | `staging` | Limpeza e tipagem de cada arquivo (views do dbt) |
-| `core` | Dados limpos e relacionados: `votacao`, `voto`, `votacao_proposicao` |
-| `editorial` | Conteúdo nosso: temas do cidadão, explicações, fontes. A importação nunca escreve aqui |
-| `app` | Views para o site (a fazer) |
+| `core` | Dados limpos e relacionados: `votacao`, `voto`, `votacao_proposicao`, `proposicao`, `proposicao_tema`, `proposicao_autor`, `deputado`, `orientacao`, `orientacao_partido` |
+| `editorial` | Conteúdo nosso, versionado como seeds do dbt (`transform/seeds/`): temas do cidadão, ligação com os temas oficiais, composição dos blocos partidários. A importação nunca escreve aqui |
+| `app` | Views para o site: `projetos_por_tema` |
 
 Fonte: [Dados Abertos da Câmara dos Deputados](https://dadosabertos.camara.leg.br/).

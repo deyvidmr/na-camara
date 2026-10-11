@@ -1,0 +1,18 @@
+tema_slug,cod_tema,observacao
+custo_de_vida,40,Economia
+custo_de_vida,67,Direito e Defesa do Consumidor
+custo_de_vida,54,"Energia, Recursos Hídricos e Minerais (contas de luz e água)"
+saude,56,Saúde
+emprego_renda,58,Trabalho e Emprego
+emprego_renda,66,"Indústria, Comércio e Serviços"
+seguranca,57,Defesa e Segurança
+seguranca,43,Direito Penal e Processual Penal
+impostos,70,Finanças Públicas e Orçamento
+impostos,40,Economia
+educacao,46,Educação
+aposentadoria,52,Previdência e Assistência Social
+moradia,41,Cidades e Desenvolvimento Urbano
+corrupcao,34,Administração Pública
+corrupcao,74,"Política, Partidos e Eleições"
+transporte,61,"Viação, Transporte e Mobilidade"
+meio_ambiente,48,Meio Ambiente e Desenvolvimento Sustentável

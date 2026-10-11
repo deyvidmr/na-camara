@@ -1,0 +1,106 @@
+sigla_bancada,tipo,partido,origem,observacao
+Avante,partido,AVANTE,nome,
+AVANTE,partido,AVANTE,nome,
+DC,partido,DC,nome,
+MDB,partido,MDB,nome,
+Missão,partido,MISSÃO,nome,
+Novo,partido,NOVO,nome,
+NOVO,partido,NOVO,nome,
+Patriota,partido,PATRIOTA,nome,
+PATRIOTA,partido,PATRIOTA,nome,
+PDT,partido,PDT,nome,
+PL,partido,PL,nome,
+PODE,partido,PODE,nome,
+Podemos,partido,PODE,nome,
+PP,partido,PP,nome,
+PRD,partido,PRD,nome,
+PSB,partido,PSB,nome,
+PSD,partido,PSD,nome,
+Republican,partido,REPUBLICANOS,nome,sigla cortada
+REPUBLICANOS,partido,REPUBLICANOS,nome,
+Solidaried,partido,SOLIDARIEDADE,nome,sigla cortada
+SOLIDARIEDADE,partido,SOLIDARIEDADE,nome,
+União,partido,UNIÃO,nome,
+UNIÃO,partido,UNIÃO,nome,
+Fdr PSDB-CIDADAN,federacao,PSDB,nome,sigla cortada
+Fdr PSDB-CIDADAN,federacao,CIDADANIA,nome,sigla cortada
+Fdr PSDB-CIDADANIA,federacao,PSDB,nome,
+Fdr PSDB-CIDADANIA,federacao,CIDADANIA,nome,
+Fdr PSOL-REDE,federacao,PSOL,nome,
+Fdr PSOL-REDE,federacao,REDE,nome,
+Fdr PT-PCdoB-PV,federacao,PT,nome,
+Fdr PT-PCdoB-PV,federacao,PCdoB,nome,
+Fdr PT-PCdoB-PV,federacao,PV,nome,
+Bl MdbPsdRepPode,bloco,MDB,nome,
+Bl MdbPsdRepPode,bloco,PSD,nome,
+Bl MdbPsdRepPode,bloco,REPUBLICANOS,nome,
+Bl MdbPsdRepPode,bloco,PODE,nome,
+Bl MdbPsdRepPodePsc,bloco,MDB,nome,
+Bl MdbPsdRepPodePsc,bloco,PSD,nome,
+Bl MdbPsdRepPodePsc,bloco,REPUBLICANOS,nome,
+Bl MdbPsdRepPodePsc,bloco,PODE,nome,
+Bl MdbPsdRepPodePsc,bloco,PSC,nome,
+Bl UniPpFdrPsdbCid...,bloco,UNIÃO,nome,
+Bl UniPpFdrPsdbCid...,bloco,PP,nome,
+Bl UniPpFdrPsdbCid...,bloco,PSDB,nome,
+Bl UniPpFdrPsdbCid...,bloco,CIDADANIA,nome,
+Bl UniPpFdrPsdbCid...,bloco,PDT,inferido,nunca orientou separado enquanto o bloco existiu
+Bl UniPpFdrPsdbCid...,bloco,AVANTE,inferido,nunca orientou separado enquanto o bloco existiu
+Bl UniPpFdrPsdbCid...,bloco,SOLIDARIEDADE,inferido,nunca orientou separado enquanto o bloco existiu
+Bl UniPpFdrPsdbCid...,bloco,PATRIOTA,inferido,nunca orientou separado enquanto o bloco existiu
+Bl UniPpFdrPsdbCid...,bloco,PRD,inferido,nunca orientou separado enquanto o bloco existiu
+Bl PlFdrPTUniPp...,bloco,PL,nome,
+Bl PlFdrPTUniPp...,bloco,PT,nome,
+Bl PlFdrPTUniPp...,bloco,PCdoB,nome,federação PT-PCdoB-PV
+Bl PlFdrPTUniPp...,bloco,PV,nome,federação PT-PCdoB-PV
+Bl PlFdrPTUniPp...,bloco,UNIÃO,nome,
+Bl PlFdrPTUniPp...,bloco,PP,nome,
+Bl PlFdrPTUniPp...,bloco,MDB,inferido,nunca orientou separado enquanto o bloco existiu
+Bl PlFdrPTUniPp...,bloco,PSD,inferido,nunca orientou separado enquanto o bloco existiu
+Bl PlFdrPTUniPp...,bloco,REPUBLICANOS,inferido,nunca orientou separado enquanto o bloco existiu
+Bl PlFdrPTUniPp...,bloco,PODE,inferido,nunca orientou separado enquanto o bloco existiu
+Bl PlFdrPTUniPp...,bloco,PSDB,inferido,nunca orientou separado enquanto o bloco existiu
+Bl PlFdrPTUniPp...,bloco,CIDADANIA,inferido,nunca orientou separado enquanto o bloco existiu
+Bl PlFdrPTUniPp...,bloco,PSB,inferido,nunca orientou separado enquanto o bloco existiu
+Bl PlFdrPTUniPp...,bloco,PDT,inferido,nunca orientou separado enquanto o bloco existiu
+Bl PlFdrPTUniPp...,bloco,AVANTE,inferido,nunca orientou separado enquanto o bloco existiu
+Bl PlFdrPTUniPp...,bloco,PRD,inferido,nunca orientou separado enquanto o bloco existiu
+Bl PlFdrPtUniPp...,bloco,PL,nome,
+Bl PlFdrPtUniPp...,bloco,PT,nome,
+Bl PlFdrPtUniPp...,bloco,PCdoB,nome,federação PT-PCdoB-PV
+Bl PlFdrPtUniPp...,bloco,PV,nome,federação PT-PCdoB-PV
+Bl PlFdrPtUniPp...,bloco,UNIÃO,nome,
+Bl PlFdrPtUniPp...,bloco,PP,nome,
+Bl PlFdrPtUniPp...,bloco,MDB,inferido,"nunca orientou separado; Avante, Solidariedade e PRD estavam no Bl AvanSolidPrd"
+Bl PlFdrPtUniPp...,bloco,PSD,inferido,"nunca orientou separado; Avante, Solidariedade e PRD estavam no Bl AvanSolidPrd"
+Bl PlFdrPtUniPp...,bloco,REPUBLICANOS,inferido,"nunca orientou separado; Avante, Solidariedade e PRD estavam no Bl AvanSolidPrd"
+Bl PlFdrPtUniPp...,bloco,PODE,inferido,"nunca orientou separado; Avante, Solidariedade e PRD estavam no Bl AvanSolidPrd"
+Bl PlFdrPtUniPp...,bloco,PSDB,inferido,"nunca orientou separado; Avante, Solidariedade e PRD estavam no Bl AvanSolidPrd"
+Bl PlFdrPtUniPp...,bloco,CIDADANIA,inferido,"nunca orientou separado; Avante, Solidariedade e PRD estavam no Bl AvanSolidPrd"
+Bl PlFdrPtUniPp...,bloco,PSB,inferido,"nunca orientou separado; Avante, Solidariedade e PRD estavam no Bl AvanSolidPrd"
+Bl PlFdrPtUniPp...,bloco,PDT,inferido,"nunca orientou separado; Avante, Solidariedade e PRD estavam no Bl AvanSolidPrd"
+Bl AvanSolidPrd...,bloco,AVANTE,api,bloco 590 da API: AVANTE; SOLIDARIEDADE; PRD
+Bl AvanSolidPrd...,bloco,SOLIDARIEDADE,api,bloco 590 da API: AVANTE; SOLIDARIEDADE; PRD
+Bl AvanSolidPrd...,bloco,PRD,api,bloco 590 da API: AVANTE; SOLIDARIEDADE; PRD
+Bl PlUniPpPsd...,bloco,PL,nome,
+Bl PlUniPpPsd...,bloco,UNIÃO,nome,
+Bl PlUniPpPsd...,bloco,PP,nome,
+Bl PlUniPpPsd...,bloco,PSD,nome,
+Bl PlUniPpPsd...,bloco,MDB,inferido,nunca orientou separado enquanto o bloco existiu
+Bl PlUniPpPsd...,bloco,REPUBLICANOS,inferido,nunca orientou separado enquanto o bloco existiu
+Bl PlUniPpPsd...,bloco,PODE,inferido,nunca orientou separado enquanto o bloco existiu
+Bl PlUniPpPsd...,bloco,PSDB,inferido,nunca orientou separado enquanto o bloco existiu
+Bl PlUniPpPsd...,bloco,CIDADANIA,inferido,nunca orientou separado enquanto o bloco existiu
+Bl UniPpPsd...,bloco,UNIÃO,api,bloco 589 da API
+Bl UniPpPsd...,bloco,PP,api,bloco 589 da API
+Bl UniPpPsd...,bloco,PSD,api,bloco 589 da API
+Bl UniPpPsd...,bloco,REPUBLICANOS,api,bloco 589 da API
+Bl UniPpPsd...,bloco,MDB,api,bloco 589 da API
+Bl UniPpPsd...,bloco,PSDB,api,bloco 589 da API
+Bl UniPpPsd...,bloco,CIDADANIA,api,bloco 589 da API
+Bl UniPpPsd...,bloco,PODE,api,bloco 589 da API
+Bloco Parlamentar,bloco,,desconhecido,composição não identificável (5 votações em março de 2023)
+Governo,lideranca,,nome,orientação do governo
+Maioria,lideranca,,nome,liderança da maioria
+Minoria,lideranca,,nome,liderança da minoria
+Oposição,lideranca,,nome,liderança da oposição

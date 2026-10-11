@@ -1,0 +1,38 @@
+version: 2
+
+seeds:
+  - name: bancada_partido
+    description: >
+      Quais partidos compõem cada bancada que orienta votos. A Câmara corta o nome dos blocos
+      ("Bl UniPpFdrPsdbCid...") e a API só informa os blocos atuais. origem: nome (lido do nome),
+      api (API da Câmara), inferido (partido que nunca orientou separado enquanto o bloco existiu),
+      desconhecido.
+    columns:
+      - name: tipo
+        tests:
+          - accepted_values:
+              values: [partido, federacao, bloco, lideranca]
+      - name: origem
+        tests:
+          - accepted_values:
+              values: [nome, api, inferido, desconhecido]
+
+  - name: tema_cidadao
+    description: Temas do dia a dia apresentados ao usuário no começo da jornada.
+    columns:
+      - name: tema_slug
+        tests: [unique, not_null]
+
+  - name: tema_cidadao_tema_oficial
+    description: Ligação entre os temas do cidadão e os temas oficiais da Câmara.
+    columns:
+      - name: tema_slug
+        tests:
+          - relationships:
+              to: ref('tema_cidadao')
+              field: tema_slug
+      - name: cod_tema
+        tests:
+          - relationships:
+              to: ref('tema')
+              field: cod_tema

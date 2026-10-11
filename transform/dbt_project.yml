@@ -14,3 +14,16 @@ models:
     core:
       +schema: core
       +materialized: table
+    app:
+      +schema: app
+      +materialized: view
+
+seeds:
+  civico:
+    +schema: editorial
+    tema_cidadao_tema_oficial:
+      +column_types:
+        cod_tema: int
+    tema_cidadao:
+      +column_types:
+        ordem: int

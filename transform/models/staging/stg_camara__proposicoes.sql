@@ -9,5 +9,6 @@ select
     regexp_substr(uri_prop_principal, '\d+$')::bigint as principal_id,
     url_inteiro_teor,
     ultimo_status_descricao_situacao        as situacao,
-    ultimo_status_data_hora::timestamp      as situacao_em
+    ultimo_status_data_hora::timestamp      as situacao_em,
+    _ano                                    as arquivo_ano
 from {{ source('camara', 'proposicoes') }}
