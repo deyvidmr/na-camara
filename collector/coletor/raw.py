@@ -149,7 +149,7 @@ def carregar_referencias(con) -> None:
 
 def _anos(con, conj: Conjunto) -> list[int | None]:
     anos = conj.anos()
-    if conj.anos_extras_sql and con.execute("select to_regclass('core.votacao_proposicao')").fetchone()[0]:
+    if conj.anos_extras_sql and con.execute("select to_regclass('core.proposicao')").fetchone()[0]:
         extras = [r[0] for r in con.execute(conj.anos_extras_sql, {"ano_inicial": conj.ano_inicial})]
         # anos já carregados antes continuam sendo atualizados
         extras += [r[0] for r in con.execute(

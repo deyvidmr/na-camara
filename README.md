@@ -10,7 +10,7 @@ cp .env.example .env            # e troque a senha; coloque sua ANTHROPIC_API_KE
 docker compose up -d db         # Postgres (só acessível de dentro do servidor)
 ./deploy/pipeline.sh            # coleta + transformação (dbt) + IA + testes
 ./deploy/criar_usuario_api.sh   # usuário só de leitura que a API usa
-docker compose up -d api        # API em http://localhost:8000 (documentação em /docs)
+docker compose up -d api        # site em http://localhost:8000, API em /api, documentação em /docs
 ```
 
 O pipeline roda todo dia às 04:00 (Brasília) via cron (`deploy/cron-coletor`).
@@ -25,6 +25,19 @@ O pipeline roda todo dia às 04:00 (Brasília) via cron (`deploy/cron-coletor`).
    com modelo, versão do prompt e campo de revisão humana.
 5. dbt de novo.
 
+## Site
+
+HTML, CSS e JavaScript sem framework (`api/site/`), servidos pela própria API. A jornada:
+
+1. **Início:** "O que mais pesa na sua vida?", com os temas do dia a dia.
+2. **Tema:** projetos votados, explicados em linguagem simples, ordenáveis por relevância, data ou
+   placar mais apertado.
+3. **Projeto:** ementa oficial, "E você, como votaria?" e, depois da resposta, o placar, a orientação
+   das lideranças, os votos por partido (marcando os que votaram como você) e a busca por deputado.
+
+A resposta do usuário fica só no navegador dele (`localStorage`), nunca vai ao servidor: opinião
+política é dado pessoal sensível pela LGPD.
+
 ## API
 
 FastAPI só de leitura (`api/`), conectada ao banco com um usuário que só tem permissão de `SELECT`.
@@ -32,10 +45,10 @@ A documentação interativa fica em `/docs`.
 
 | Rota | O que devolve |
 |---|---|
-| `GET /temas` | Temas do dia a dia e quantos projetos votados cada um tem |
-| `GET /temas/{tema}/projetos?ordem=relevancia\|recentes\|divididos` | Projetos do tema com placar e justificativa da IA |
-| `GET /projetos/{id}` | Projeto: dados oficiais, autores, temas, votação principal e demais votações do texto |
-| `GET /votacoes/{id}?incluir_votos=true` | Placar, orientação das lideranças, votos e orientação por partido, voto de cada deputado |
+| `GET /api/temas` | Temas do dia a dia e quantos projetos votados cada um tem |
+| `GET /api/temas/{tema}/projetos?ordem=relevancia\|recentes\|divididos` | Projetos do tema com placar e justificativa da IA |
+| `GET /api/projetos/{id}` | Projeto: dados oficiais, autores, temas, votação principal e demais votações do texto |
+| `GET /api/votacoes/{id}?incluir_votos=true` | Placar, orientação das lideranças, votos e orientação por partido, voto de cada deputado |
 
 Testes de integração com fatos conferidos nas fontes oficiais: `docker compose run --rm api pytest -q`.
 

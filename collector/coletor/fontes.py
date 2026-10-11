@@ -47,7 +47,11 @@ CONJUNTOS = [
                or (vp.proposicao_id is not null and not exists (
                    select 1 from core.proposicao p where p.proposicao_id = vp.proposicao_id)))
     """),
-    Conjunto("proposicoesAutores"),
+    # Autores seguem os mesmos anos antigos já baixados para proposicoes.
+    Conjunto("proposicoesAutores", anos_extras_sql="""
+        select distinct ano from raw.carga
+        where conjunto = 'proposicoes' and ano < %(ano_inicial)s and status = 'carregado'
+    """),
     Conjunto("proposicoesTemas", ano_inicial=ANO_INICIAL_TEMAS),
     Conjunto("deputados", anual=False),
 ]

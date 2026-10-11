@@ -1,7 +1,9 @@
 """API de leitura do projeto cívico: temas, projetos votados e votos."""
 from contextlib import asynccontextmanager
+from pathlib import Path
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import APIRouter, FastAPI, HTTPException, Query
+from fastapi.staticfiles import StaticFiles
 
 from . import esquemas as e
 from .db import consultar, consultar_um, pool
@@ -24,6 +26,7 @@ app = FastAPI(
     version="0.1.0",
     lifespan=ciclo_de_vida,
 )
+api = APIRouter(prefix="/api")
 
 
 def _placar(linha: dict) -> e.Placar:
@@ -35,13 +38,13 @@ def _pct(sim: int, nao: int) -> float | None:
     return round(100 * sim / (sim + nao), 1) if sim + nao else None
 
 
-@app.get("/saude", tags=["infra"])
+@api.get("/saude", tags=["infra"])
 def saude():
     consultar("select 1")
     return {"status": "ok"}
 
 
-@app.get("/temas", response_model=list[e.Tema], tags=["temas"])
+@api.get("/temas", response_model=list[e.Tema], tags=["temas"])
 def listar_temas():
     """Temas do dia a dia, com quantos projetos votados cada um tem."""
     return consultar("""
@@ -53,7 +56,7 @@ def listar_temas():
     """)
 
 
-@app.get("/temas/{tema_slug}/projetos", response_model=list[e.ProjetoResumo], tags=["temas"])
+@api.get("/temas/{tema_slug}/projetos", response_model=list[e.ProjetoResumo], tags=["temas"])
 def projetos_do_tema(
     tema_slug: str,
     ordem: str = Query("relevancia", pattern="^(relevancia|recentes|divididos)$",
@@ -74,7 +77,7 @@ def projetos_do_tema(
     return [e.ProjetoResumo(**l, placar=_placar(l)) for l in linhas]
 
 
-@app.get("/projetos/{proposicao_id}", response_model=e.Projeto, tags=["projetos"])
+@api.get("/projetos/{proposicao_id}", response_model=e.Projeto, tags=["projetos"])
 def projeto(proposicao_id: int):
     """Um projeto: dados oficiais, autores, temas, votação principal e demais votações do texto."""
     p = consultar_um("""
@@ -115,7 +118,7 @@ def projeto(proposicao_id: int):
     )
 
 
-@app.get("/votacoes/{votacao_id}", response_model=e.Votacao, response_model_exclude_none=True,
+@api.get("/votacoes/{votacao_id}", response_model=e.Votacao, response_model_exclude_none=True,
          tags=["votações"])
 def votacao(votacao_id: str, incluir_votos: bool = Query(False, description="lista o voto de cada deputado")):
     """Uma votação: placar, orientação das lideranças, votos e orientação por partido."""
@@ -160,3 +163,8 @@ def votacao(votacao_id: str, incluir_votos: bool = Query(False, description="lis
         partidos=partidos,
         votos=votos,
     )
+
+
+app.include_router(api)
+# O site (HTML/JS estático) fica na raiz; as rotas da API vêm antes e têm prioridade.
+app.mount("/", StaticFiles(directory=Path(__file__).parent.parent / "site", html=True), name="site")

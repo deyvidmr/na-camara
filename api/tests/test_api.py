@@ -18,33 +18,33 @@ def cliente():
 
 
 def test_saude(cliente):
-    assert cliente.get("/saude").json() == {"status": "ok"}
+    assert cliente.get("/api/saude").json() == {"status": "ok"}
 
 
 def test_temas_tem_projetos(cliente):
-    temas = {t["tema_slug"]: t for t in cliente.get("/temas").json()}
+    temas = {t["tema_slug"]: t for t in cliente.get("/api/temas").json()}
     assert "custo_de_vida" in temas
     assert temas["custo_de_vida"]["projetos"] > 0
 
 
 def test_tema_inexistente(cliente):
-    assert cliente.get("/temas/nao-existe/projetos").status_code == 404
+    assert cliente.get("/api/temas/nao-existe/projetos").status_code == 404
 
 
 def test_tarifa_social_em_custo_de_vida(cliente):
     # a ligação por tema oficial perdia este projeto; a avaliação da IA o recupera
-    projetos = cliente.get("/temas/custo_de_vida/projetos").json()
+    projetos = cliente.get("/api/temas/custo_de_vida/projetos").json()
     assert TARIFA_SOCIAL in [p["proposicao_id"] for p in projetos]
 
 
 def test_ordem_divididos(cliente):
-    projetos = cliente.get("/temas/custo_de_vida/projetos", params={"ordem": "divididos"}).json()
+    projetos = cliente.get("/api/temas/custo_de_vida/projetos", params={"ordem": "divididos"}).json()
     distancias = [abs((p["placar"]["pct_sim"] or 100) - 50) for p in projetos]
     assert distancias == sorted(distancias)
 
 
 def test_projeto_tarifa_social(cliente):
-    p = cliente.get(f"/projetos/{TARIFA_SOCIAL}").json()
+    p = cliente.get(f"/api/projetos/{TARIFA_SOCIAL}").json()
     assert p["nome"] == "PL 9543/2018"
     assert p["votacao_principal"]["votacao_id"] == TARIFA_SOCIAL_VOTACAO
     assert p["votacao_principal"]["placar"]["sim"] == 325
@@ -52,7 +52,7 @@ def test_projeto_tarifa_social(cliente):
 
 
 def test_votacao_por_partido(cliente):
-    v = cliente.get(f"/votacoes/{TARIFA_SOCIAL_VOTACAO}").json()
+    v = cliente.get(f"/api/votacoes/{TARIFA_SOCIAL_VOTACAO}").json()
     partidos = {p["partido"]: p for p in v["partidos"]}
     assert partidos["PL"]["sim"] == 13 and partidos["PL"]["nao"] == 70
     assert partidos["PL"]["orientacao"] == "nao"
@@ -62,15 +62,20 @@ def test_votacao_por_partido(cliente):
 
 
 def test_votacao_com_votos(cliente):
-    v = cliente.get(f"/votacoes/{TARIFA_SOCIAL_VOTACAO}", params={"incluir_votos": True}).json()
+    v = cliente.get(f"/api/votacoes/{TARIFA_SOCIAL_VOTACAO}", params={"incluir_votos": True}).json()
     assert len([x for x in v["votos"] if x["voto"] == "sim"]) == 325
 
 
 def test_reforma_tributaria_ligada_a_pec_certa(cliente):
     # o registro da Câmara aponta para a PEC 293/2004; a votação foi da PEC 45/2019
-    v = cliente.get("/votacoes/259094-136").json()
+    v = cliente.get("/api/votacoes/259094-136").json()
     assert v["projeto"] == "PEC 45/2019"
 
 
 def test_projeto_inexistente(cliente):
-    assert cliente.get("/projetos/1").status_code == 404
+    assert cliente.get("/api/projetos/1").status_code == 404
+
+
+def test_site_na_raiz(cliente):
+    r = cliente.get("/")
+    assert r.status_code == 200 and "text/html" in r.headers["content-type"]
