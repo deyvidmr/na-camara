@@ -1,3 +1,5 @@
+{{ config(indexes=[{'columns': ['votacao_id']}]) }}
+
 -- Orientação que valeu para cada partido em cada votação nominal.
 -- Prioridade: orientação do próprio partido > da federação > do bloco.
 -- A composição dos blocos vem de editorial.bancada_partido (coluna origem: nome, api ou inferido).

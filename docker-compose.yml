@@ -56,6 +56,25 @@ services:
     # Ex.: docker compose run --rm dbt build
     profiles: ["coleta"]
 
+  api:
+    build: ./api
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      POSTGRES_HOST: db
+    # Como o banco, só acessível de dentro do servidor até existir um site.
+    ports:
+      - "127.0.0.1:8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    mem_limit: 256m
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/saude')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
   ia:
     build: ./ia
     env_file: .env

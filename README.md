@@ -8,7 +8,9 @@ Projeto de portfólio: Engenharia de Dados + IA Aplicada.
 ```bash
 cp .env.example .env            # e troque a senha; coloque sua ANTHROPIC_API_KEY
 docker compose up -d db         # Postgres (só acessível de dentro do servidor)
-./deploy/pipeline.sh            # coleta + transformação (dbt) + testes
+./deploy/pipeline.sh            # coleta + transformação (dbt) + IA + testes
+./deploy/criar_usuario_api.sh   # usuário só de leitura que a API usa
+docker compose up -d api        # API em http://localhost:8000 (documentação em /docs)
 ```
 
 O pipeline roda todo dia às 04:00 (Brasília) via cron (`deploy/cron-coletor`).
@@ -22,6 +24,20 @@ O pipeline roda todo dia às 04:00 (Brasília) via cron (`deploy/cron-coletor`).
    cada tema do cidadão, com uma justificativa em linguagem simples. Resultado em `ia.relevancia_tema`,
    com modelo, versão do prompt e campo de revisão humana.
 5. dbt de novo.
+
+## API
+
+FastAPI só de leitura (`api/`), conectada ao banco com um usuário que só tem permissão de `SELECT`.
+A documentação interativa fica em `/docs`.
+
+| Rota | O que devolve |
+|---|---|
+| `GET /temas` | Temas do dia a dia e quantos projetos votados cada um tem |
+| `GET /temas/{tema}/projetos?ordem=relevancia\|recentes\|divididos` | Projetos do tema com placar e justificativa da IA |
+| `GET /projetos/{id}` | Projeto: dados oficiais, autores, temas, votação principal e demais votações do texto |
+| `GET /votacoes/{id}?incluir_votos=true` | Placar, orientação das lideranças, votos e orientação por partido, voto de cada deputado |
+
+Testes de integração com fatos conferidos nas fontes oficiais: `docker compose run --rm api pytest -q`.
 
 ## IA aplicada: relevância por tema
 
@@ -48,6 +64,8 @@ Por isso a IA avalia cada projeto votado contra todos os temas, numa chamada só
 - Orientações vêm por bloco, com nomes cortados ("Bl UniPpFdrPsdbCid..."). A composição de cada bloco
   está em `editorial.bancada_partido`, com a origem de cada partido: nome do bloco, API ou inferido
   dos dados (partido que nunca orientou separado enquanto o bloco existiu).
+- Teste: todo projeto votado no Plenário tem cadastro (nome, ementa). Ele pegou 30 votações cujos
+  projetos (entre eles a Reforma Tributária, PEC 45/2019) estavam ligados por id mas sem os dados.
 - Teste: o placar oficial bate com a soma dos votos individuais em todas as votações não secretas.
 
 ## Camadas do banco
@@ -58,7 +76,7 @@ Por isso a IA avalia cada projeto votado contra todos os temas, numa chamada só
 | `staging` | Limpeza e tipagem de cada arquivo (views do dbt) |
 | `core` | Dados limpos e relacionados: `votacao`, `voto`, `votacao_proposicao`, `proposicao`, `proposicao_tema`, `proposicao_autor`, `deputado`, `orientacao`, `orientacao_partido` |
 | `editorial` | Conteúdo nosso, versionado como seeds do dbt (`transform/seeds/`): temas do cidadão, ligação com os temas oficiais, composição dos blocos partidários. A importação nunca escreve aqui |
-| `app` | Views para o site: `projetos_votados`, `projetos_curados` (temas pela IA) e `projetos_por_tema` (temas pela ligação oficial, para comparação) |
+| `app` | Views para o site e a API: `projetos_votados`, `projetos_curados` (temas pela IA) e `projetos_por_tema` (temas pela ligação oficial, para comparação) |
 | `ia` | Resultados da IA, com modelo, versão do prompt e revisão humana |
 
 Fonte: [Dados Abertos da Câmara dos Deputados](https://dadosabertos.camara.leg.br/).

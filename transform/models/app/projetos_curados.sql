@@ -16,6 +16,7 @@ select
     p.aprovada,
     p.votos_sim,
     p.votos_nao,
+    p.votos_outros,
     p.pct_sim
 from {{ source('ia', 'relevancia_tema') }} r
 join {{ ref('projetos_votados') }} p using (proposicao_id)

@@ -1,3 +1,5 @@
+{{ config(indexes=[{'columns': ['proposicao_id']}]) }}
+
 select
     proposicao_id,
     deputado_id,

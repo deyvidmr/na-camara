@@ -1,3 +1,5 @@
+{{ config(indexes=[{'columns': ['proposicao_id'], 'unique': True}]) }}
+
 -- Projetos (PL, PEC, MPV...). Projetos renumerados mantêm o id; o número exibido é o atual.
 select distinct on (proposicao_id)
     proposicao_id,

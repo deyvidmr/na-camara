@@ -37,11 +37,15 @@ CONJUNTOS = [
     Conjunto("votacoesOrientacoes"),
     Conjunto("votacoesProposicoes"),
     Conjunto("votacoesObjetos"),
-    # Votações atuais citam projetos antigos (ex.: PL 2148/2015). Baixa só os anos citados
-    # que ainda faltam. A consulta usa a camada core, então só tem efeito depois do primeiro dbt build.
+    # Votações atuais tratam de projetos antigos (ex.: PEC 45/2019, PL 2148/2015). Baixa só os anos
+    # de projetos ligados a votações que ainda estão sem cadastro: citados sem id, ou com id mas sem
+    # os dados do projeto. A consulta usa a camada core, então só tem efeito depois do primeiro dbt build.
     Conjunto("proposicoes", anos_extras_sql="""
-        select distinct ano from core.votacao_proposicao
-        where metodo = 'descricao_sem_id' and ano < %(ano_inicial)s
+        select distinct vp.ano from core.votacao_proposicao vp
+        where vp.ano < %(ano_inicial)s
+          and (vp.metodo = 'descricao_sem_id'
+               or (vp.proposicao_id is not null and not exists (
+                   select 1 from core.proposicao p where p.proposicao_id = vp.proposicao_id)))
     """),
     Conjunto("proposicoesAutores"),
     Conjunto("proposicoesTemas", ano_inicial=ANO_INICIAL_TEMAS),

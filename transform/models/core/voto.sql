@@ -1,3 +1,5 @@
+{{ config(indexes=[{'columns': ['votacao_id']}, {'columns': ['deputado_id']}]) }}
+
 -- Um voto de um deputado numa votação nominal.
 select
     votacao_id || ':' || deputado_id                as voto_id,

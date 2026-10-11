@@ -1,3 +1,5 @@
+{{ config(indexes=[{'columns': ['votacao_id'], 'unique': True}]) }}
+
 -- Uma linha por votação, com o tipo do que estava sendo decidido.
 -- O "Sim" de cada votação responde à pergunta daquela votação: num destaque, "Sim" pode
 -- significar manter um trecho, não apoiar o projeto. Por isso o tipo importa.

@@ -1,3 +1,5 @@
+{{ config(indexes=[{'columns': ['votacao_id'], 'unique': True}, {'columns': ['proposicao_id']}]) }}
+
 -- Qual projeto foi realmente votado em cada votação.
 --
 -- O registro da Câmara (votacoesProposicoes) às vezes aponta para o projeto mais antigo de um

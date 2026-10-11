@@ -1,3 +1,5 @@
+{{ config(indexes=[{'columns': ['proposicao_id']}]) }}
+
 -- Temas oficiais de cada projeto (um projeto pode ter vários).
 select
     pt.proposicao_id || ':' || pt.cod_tema   as proposicao_tema_id,

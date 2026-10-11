@@ -1,3 +1,5 @@
+{{ config(indexes=[{'columns': ['votacao_id']}]) }}
+
 -- Orientação de cada bancada (partido, federação, bloco ou liderança) em cada votação.
 select
     o.votacao_id || ':' || o.sigla_bancada  as orientacao_id,
