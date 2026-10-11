@@ -44,6 +44,18 @@ services:
     # Ex.: docker compose run --rm coletor raw
     profiles: ["coleta"]
 
+  dbt:
+    build: ./transform
+    env_file: .env
+    environment:
+      POSTGRES_HOST: db
+    depends_on:
+      db:
+        condition: service_healthy
+    mem_limit: 512m
+    # Ex.: docker compose run --rm dbt build
+    profiles: ["coleta"]
+
 volumes:
   pgdata:
   downloads:

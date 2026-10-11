@@ -147,12 +147,24 @@ def carregar_referencias(con) -> None:
         log.info("referência %s: %d itens", ref, len(dados))
 
 
+def _anos(con, conj: Conjunto) -> list[int | None]:
+    anos = conj.anos()
+    if conj.anos_extras_sql and con.execute("select to_regclass('core.votacao_proposicao')").fetchone()[0]:
+        extras = [r[0] for r in con.execute(conj.anos_extras_sql, {"ano_inicial": conj.ano_inicial})]
+        # anos já carregados antes continuam sendo atualizados
+        extras += [r[0] for r in con.execute(
+            "select distinct ano from raw.carga where conjunto = %s and ano < %s and status = 'carregado'",
+            (conj.nome, conj.ano_inicial))]
+        anos = sorted(set(extras)) + anos
+    return anos
+
+
 def executar(con, nomes: set[str] | None = None, forcar: bool = False) -> int:
     falhas = 0
     for conj in CONJUNTOS:
         if nomes and conj.nome not in nomes:
             continue
-        for ano in conj.anos():
+        for ano in _anos(con, conj):
             try:
                 carregar_arquivo(con, conj, ano, forcar)
             except Exception as e:  # um arquivo com problema não impede os outros

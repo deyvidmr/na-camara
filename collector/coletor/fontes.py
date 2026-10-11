@@ -18,6 +18,8 @@ class Conjunto:
     nome: str             # nome do arquivo na Câmara, ex.: votacoesVotos
     anual: bool = True    # um arquivo por ano?
     ano_inicial: int = ANO_INICIAL
+    # consulta que devolve anos anteriores ao ano_inicial que também precisam ser baixados
+    anos_extras_sql: str | None = None
 
     def url(self, ano: int | None) -> str:
         arquivo = f"{self.nome}-{ano}.csv" if self.anual else f"{self.nome}.csv"
@@ -35,7 +37,12 @@ CONJUNTOS = [
     Conjunto("votacoesOrientacoes"),
     Conjunto("votacoesProposicoes"),
     Conjunto("votacoesObjetos"),
-    Conjunto("proposicoes"),
+    # Votações atuais citam projetos antigos (ex.: PL 2148/2015). Baixa só os anos citados
+    # que ainda faltam. A consulta usa a camada core, então só tem efeito depois do primeiro dbt build.
+    Conjunto("proposicoes", anos_extras_sql="""
+        select distinct ano from core.votacao_proposicao
+        where metodo = 'descricao_sem_id' and ano < %(ano_inicial)s
+    """),
     Conjunto("proposicoesAutores"),
     Conjunto("proposicoesTemas", ano_inicial=ANO_INICIAL_TEMAS),
     Conjunto("deputados", anual=False),

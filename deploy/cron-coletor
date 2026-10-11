@@ -1,5 +1,5 @@
-# Coleta diária dos dados da Câmara: 07:00 UTC (04:00 em Brasília).
+# Pipeline diário (coleta + dbt): 07:00 UTC (04:00 em Brasília).
 # flock impede duas coletas ao mesmo tempo. Instalar: cp deploy/cron-coletor /etc/cron.d/projeto-civico
 SHELL=/bin/bash
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-0 7 * * * root cd /opt/projeto && flock -n /tmp/projeto-coletor.lock docker compose run --rm coletor raw >> /var/log/projeto-coletor.log 2>&1
+0 7 * * * root cd /opt/projeto && flock -n /tmp/projeto-coletor.lock ./deploy/pipeline.sh >> /var/log/projeto-coletor.log 2>&1

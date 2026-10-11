@@ -1,0 +1,50 @@
+version: 2
+
+models:
+  - name: votacao
+    description: Uma linha por votação da Câmara (Plenário e comissões), com o tipo do que foi decidido.
+    columns:
+      - name: votacao_id
+        tests: [unique, not_null]
+      - name: tipo
+        description: >
+          texto_principal, destaque, emenda, urgencia, requerimento, procedimento, redacao_final ou outro.
+          Classificado por regras sobre a descrição; "outro" é candidato à classificação por IA.
+        tests:
+          - not_null
+          - accepted_values:
+              values: [texto_principal, destaque, emenda, urgencia, requerimento, procedimento, redacao_final, outro]
+      - name: nominal
+        description: A Câmara registrou o voto de cada deputado. Votações simbólicas têm só o resultado.
+        tests: [not_null]
+
+  - name: voto
+    description: Voto de cada deputado em cada votação nominal, com partido e UF na data do voto.
+    columns:
+      - name: voto_id
+        tests: [unique, not_null]
+      - name: voto
+        tests:
+          - not_null
+          - accepted_values:
+              values: [sim, nao, abstencao, obstrucao, presidente, secreto]
+      - name: votacao_id
+        tests:
+          - relationships:
+              to: ref('votacao')
+              field: votacao_id
+
+  - name: votacao_proposicao
+    description: Qual projeto foi votado em cada votação. Ver o comentário do modelo para a regra.
+    columns:
+      - name: votacao_id
+        tests:
+          - unique
+          - not_null
+          - relationships:
+              to: ref('votacao')
+              field: votacao_id
+      - name: metodo
+        tests:
+          - accepted_values:
+              values: [descricao, descricao_renumerado, descricao_sem_id, registro_camara]

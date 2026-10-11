@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: camara
+    description: Arquivos de dados abertos da Câmara dos Deputados, carregados como texto pelo coletor.
+    schema: raw
+    tables:
+      - name: votacoes
+      - name: votacoes_votos
+      - name: votacoes_proposicoes
+      - name: proposicoes
