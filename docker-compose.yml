@@ -56,6 +56,18 @@ services:
     # Ex.: docker compose run --rm dbt build
     profiles: ["coleta"]
 
+  ia:
+    build: ./ia
+    env_file: .env
+    environment:
+      POSTGRES_HOST: db
+    depends_on:
+      db:
+        condition: service_healthy
+    mem_limit: 256m
+    # Ex.: docker compose run --rm ia relevancia --limite 10
+    profiles: ["coleta"]
+
 volumes:
   pgdata:
   downloads:

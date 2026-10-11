@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: ia
+    description: Resultados de IA gravados pelo serviço ia/ (modelo, versão do prompt e revisão humana).
+    schema: ia
+    tables:
+      - name: relevancia_tema

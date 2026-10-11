@@ -6,7 +6,7 @@ Projeto de portfólio: Engenharia de Dados + IA Aplicada.
 ## Como rodar
 
 ```bash
-cp .env.example .env            # e troque a senha
+cp .env.example .env            # e troque a senha; coloque sua ANTHROPIC_API_KEY
 docker compose up -d db         # Postgres (só acessível de dentro do servidor)
 ./deploy/pipeline.sh            # coleta + transformação (dbt) + testes
 ```
@@ -17,7 +17,22 @@ O pipeline roda todo dia às 04:00 (Brasília) via cron (`deploy/cron-coletor`).
 
 1. **Coletor** (`collector/`): baixa os arquivos anuais da Câmara para `raw`. Pula o que não mudou.
 2. **dbt** (`transform/`): `raw` → `staging` (limpeza) → `core` (regras do domínio), com testes.
-3. Coletor de novo, só para os anos antigos de projetos citados em votações atuais, e dbt de novo.
+3. Coletor de novo, só para os anos antigos de projetos citados em votações atuais.
+4. **IA** (`ia/`): avalia, para cada projeto votado ainda não avaliado, a relevância (0 a 3) para
+   cada tema do cidadão, com uma justificativa em linguagem simples. Resultado em `ia.relevancia_tema`,
+   com modelo, versão do prompt e campo de revisão humana.
+5. dbt de novo.
+
+## IA aplicada: relevância por tema
+
+A ligação entre temas do cidadão e temas oficiais da Câmara é ampla e erra nos dois sentidos:
+traz projetos sem relação (regras para multinacionais em "Custo de vida") e perde projetos óbvios
+(a Tarifa Social de Água está em "Previdência e Assistência Social" e não chegava a "Custo de vida").
+Por isso a IA avalia cada projeto votado contra todos os temas, numa chamada só, a partir da ementa.
+
+- Modelo: Claude Opus 5.5, esforço baixo, saída em JSON validado por esquema.
+- `app.projetos_curados`: grau 2 ou 3, ou confirmado por revisão humana; rejeitados ficam de fora.
+- Custo da primeira avaliação completa (167 projetos x 11 temas): cerca de US$ 3.
 
 ## Armadilhas dos dados tratadas na camada core
 
@@ -43,6 +58,7 @@ O pipeline roda todo dia às 04:00 (Brasília) via cron (`deploy/cron-coletor`).
 | `staging` | Limpeza e tipagem de cada arquivo (views do dbt) |
 | `core` | Dados limpos e relacionados: `votacao`, `voto`, `votacao_proposicao`, `proposicao`, `proposicao_tema`, `proposicao_autor`, `deputado`, `orientacao`, `orientacao_partido` |
 | `editorial` | Conteúdo nosso, versionado como seeds do dbt (`transform/seeds/`): temas do cidadão, ligação com os temas oficiais, composição dos blocos partidários. A importação nunca escreve aqui |
-| `app` | Views para o site: `projetos_por_tema` |
+| `app` | Views para o site: `projetos_votados`, `projetos_curados` (temas pela IA) e `projetos_por_tema` (temas pela ligação oficial, para comparação) |
+| `ia` | Resultados da IA, com modelo, versão do prompt e revisão humana |
 
 Fonte: [Dados Abertos da Câmara dos Deputados](https://dadosabertos.camara.leg.br/).
