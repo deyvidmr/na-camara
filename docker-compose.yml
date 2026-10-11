@@ -1,0 +1,49 @@
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    env_file: .env
+    # Porta acessível só de dentro do servidor (127.0.0.1), nunca da internet.
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    # Servidor pequeno (1 CPU, 2 GB RAM): memória do Postgres bem limitada.
+    command:
+      - postgres
+      - -c
+      - shared_buffers=64MB
+      - -c
+      - work_mem=4MB
+      - -c
+      - maintenance_work_mem=64MB
+      - -c
+      - effective_cache_size=256MB
+      - -c
+      - max_connections=20
+    mem_limit: 384m
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  coletor:
+    build: ./collector
+    env_file: .env
+    environment:
+      POSTGRES_HOST: db
+    volumes:
+      - downloads:/data
+    depends_on:
+      db:
+        condition: service_healthy
+    mem_limit: 256m
+    # Não fica rodando: é executado sob demanda ou pelo cron.
+    # Ex.: docker compose run --rm coletor raw
+    profiles: ["coleta"]
+
+volumes:
+  pgdata:
+  downloads:
