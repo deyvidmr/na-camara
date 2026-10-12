@@ -1,0 +1,27 @@
+version: 2
+
+models:
+  - name: projetos_votados
+    description: >
+      Projetos com votação nominal do texto principal no Plenário: os que podem ter a pergunta
+      "como você votaria?". Uma linha por projeto, com a primeira votação do texto na Câmara.
+    columns:
+      - name: proposicao_id
+        tests: [unique, not_null]
+      - name: pct_sim
+        description: Percentual de Sim entre Sim e Não. Perto de 50 significa Plenário dividido.
+
+  - name: projetos_curados
+    description: >
+      O que o site mostra em cada tema: projetos votados que a IA avaliou com grau 2 ou 3 para o tema,
+      ou que uma pessoa confirmou, sem os rejeitados na revisão humana.
+    columns:
+      - name: grau
+        description: 0 a 3, dado pela IA a partir da ementa (ver ia/ia/relevancia.py).
+      - name: justificativa
+        description: Explicação em linguagem simples, escrita pela IA, mostrada no site.
+
+  - name: projetos_por_tema
+    description: >
+      Mesma ideia de projetos_curados, mas pela ligação entre temas do cidadão e temas oficiais da
+      Câmara (editorial.tema_cidadao_tema_oficial). Mantida para comparar com a avaliação da IA.

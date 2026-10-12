@@ -34,6 +34,12 @@ IA, então visitas não geram custo de API.
 
 Pendente: domínio e HTTPS.
 
+## Documentação dos dados
+
+`http://<servidor>/dados/`: documentação gerada pelo dbt a cada execução do pipeline, com todas as
+tabelas, colunas, descrições, testes e o diagrama de linhagem (de qual arquivo da Câmara cada tabela
+vem e quais dependem dela). As descrições ficam nos arquivos `_*.yml` de `transform/models/`.
+
 ## Site
 
 HTML, CSS e JavaScript sem framework (`api/site/`), servidos pela própria API. A jornada:

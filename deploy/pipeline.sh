@@ -13,4 +13,5 @@ docker compose run --rm coletor raw proposicoes
 # o resto do pipeline continua e os projetos ficam para o dia seguinte.
 docker compose run --rm ia relevancia || echo "!! IA falhou; seguindo sem as avaliações novas"
 docker compose run --rm dbt build
+docker compose run --rm dbt docs generate   # documentação servida em /dados/
 echo "== $(date -Is) fim"

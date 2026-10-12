@@ -1,0 +1,21 @@
+version: 2
+
+models:
+  - name: stg_camara__votacoes
+    description: Votações (arquivo votacoes-ANO). Tipos convertidos e descrição normalizada (quebras de linha e espaço não separável).
+  - name: stg_camara__votos
+    description: Voto de cada deputado (arquivo votacoesVotos-ANO). Voto vazio indica votação secreta.
+  - name: stg_camara__votacoes_proposicoes
+    description: Projetos que a Câmara liga a cada votação (arquivo votacoesProposicoes-ANO). Pode apontar para o projeto errado; ver core.votacao_proposicao.
+  - name: stg_camara__proposicoes
+    description: Projetos (arquivo proposicoes-ANO). Um mesmo id pode aparecer em mais de um arquivo anual.
+  - name: stg_camara__proposicoes_temas
+    description: Temas oficiais de cada projeto (arquivo proposicoesTemas-ANO), sem duplicatas.
+  - name: stg_camara__autores
+    description: Autores de cada projeto (arquivo proposicoesAutores-ANO).
+  - name: stg_camara__deputados
+    description: Cadastro de deputados (arquivo deputados).
+  - name: stg_camara__orientacoes
+    description: Orientação de cada bancada por votação (arquivo votacoesOrientacoes-ANO), com valores padronizados.
+  - name: stg_camara__temas
+    description: Lista dos temas oficiais (API, /referencias/proposicoes/codTema).

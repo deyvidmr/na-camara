@@ -49,6 +49,10 @@ services:
     env_file: .env
     environment:
       POSTGRES_HOST: db
+      # artefatos do dbt (inclusive a documentação) num volume que o nginx serve em /dados/
+      DBT_TARGET_PATH: /dbt/target
+    volumes:
+      - dbt_docs:/dbt/target
     depends_on:
       db:
         condition: service_healthy
@@ -65,6 +69,7 @@ services:
     volumes:
       # a pasta inteira (não o arquivo), para edições aparecerem no container
       - ./deploy/nginx:/etc/nginx/conf.d:ro
+      - dbt_docs:/usr/share/nginx/dados:ro
     depends_on:
       - api
     mem_limit: 64m
@@ -101,5 +106,6 @@ services:
     profiles: ["coleta"]
 
 volumes:
+  dbt_docs:
   pgdata:
   downloads:

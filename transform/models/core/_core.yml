@@ -2,14 +2,21 @@ version: 2
 
 models:
   - name: votacao
-    description: Uma linha por votação da Câmara (Plenário e comissões), com o tipo do que foi decidido.
+    description: >
+      Uma linha por votação da Câmara (Plenário e comissões), com o tipo do que foi decidido.
+      O "Sim" de cada votação responde à pergunta daquela votação: num destaque, "Sim" pode
+      significar manter um trecho, não apoiar o projeto.
     columns:
       - name: votacao_id
+        description: Identificador da Câmara, no formato "<id do evento>-<sequência>".
         tests: [unique, not_null]
+      - name: plenario
+        description: Votação no Plenário (as demais são em comissões).
       - name: tipo
         description: >
-          texto_principal, texto_senado (mudanças do Senado), destaque, emenda, urgencia, requerimento, procedimento, redacao_final ou outro.
-          Classificado por regras sobre a descrição; "outro" é candidato à classificação por IA.
+          texto_principal, texto_senado (mudanças do Senado), destaque, emenda, urgencia, requerimento,
+          procedimento, redacao_final ou outro. Classificado por regras sobre a descrição; "outro" é
+          candidato à classificação por IA.
         tests:
           - not_null
           - accepted_values:
@@ -17,13 +24,23 @@ models:
       - name: nominal
         description: A Câmara registrou o voto de cada deputado. Votações simbólicas têm só o resultado.
         tests: [not_null]
+      - name: secreta
+        description: "Votação secreta (por exemplo, indicação de autoridades). Registra quem participou, mas não o voto."
+      - name: votos_sim
+        description: Placar oficial. O teste placar_bate_com_votos confere com a soma dos votos individuais.
+      - name: descricao
+        description: Texto da Câmara sobre o que foi votado. É dele que sai o projeto votado e o tipo.
 
   - name: voto
     description: Voto de cada deputado em cada votação nominal, com partido e UF na data do voto.
     columns:
       - name: voto_id
+        description: "<votacao_id>:<deputado_id>"
         tests: [unique, not_null]
       - name: voto
+        description: >
+          sim, nao, abstencao, obstrucao, presidente (quem preside a sessão não vota, art. 17 do
+          Regimento) ou secreto. Ausentes não aparecem: ausência não é voto contra.
         tests:
           - not_null
           - accepted_values:
@@ -33,9 +50,14 @@ models:
           - relationships:
               to: ref('votacao')
               field: votacao_id
+      - name: partido
+        description: Partido do deputado na data do voto, não o atual.
 
   - name: votacao_proposicao
-    description: Qual projeto foi votado em cada votação. Ver o comentário do modelo para a regra.
+    description: >
+      Qual projeto foi realmente votado em cada votação. A descrição da votação tem prioridade sobre o
+      registro da Câmara, que às vezes aponta para o projeto mais antigo de um grupo de anexados
+      (a Reforma Tributária, PEC 45/2019, aparece registrada como PEC 293/2004).
     columns:
       - name: votacao_id
         tests:
@@ -45,41 +67,71 @@ models:
               to: ref('votacao')
               field: votacao_id
       - name: metodo
+        description: >
+          descricao (citado na descrição e encontrado), descricao_renumerado (citado com número antigo;
+          a Câmara renumera projetos), descricao_sem_id (citado mas ainda sem id) ou registro_camara
+          (descrição não cita projeto).
         tests:
           - accepted_values:
               values: [descricao, descricao_renumerado, descricao_sem_id, registro_camara]
+      - name: registro_camara
+        description: O que o registro da Câmara dizia, guardado para auditoria.
 
   - name: proposicao
+    description: >
+      Projetos (PL, PLP, PEC, MPV, PDL...) com ementa, situação e link do texto. Inclui os anos de
+      2023 em diante e os anos antigos de projetos votados nesse período.
     columns:
       - name: proposicao_id
         tests: [unique, not_null]
+      - name: nome
+        description: Sigla, número e ano atuais. Projetos renumerados mantêm o id e mudam o nome.
+      - name: principal_id
+        description: Projeto principal, quando este está anexado a outro.
 
   - name: proposicao_tema
+    description: Temas oficiais da Câmara de cada projeto. Um projeto pode ter vários.
     columns:
       - name: proposicao_tema_id
         tests: [unique, not_null]
 
+  - name: proposicao_autor
+    description: Autores de cada projeto (deputados, Senado, Executivo, comissões).
+
+  - name: tema
+    description: Os 32 temas oficiais da Câmara.
+
   - name: deputado
+    description: Cadastro de todos os deputados que a Câmara publica.
     columns:
       - name: deputado_id
         tests: [unique, not_null]
 
   - name: orientacao
+    description: >
+      O que cada bancada (partido, federação, bloco ou liderança como Governo e Oposição) orientou
+      em cada votação.
     columns:
       - name: orientacao_id
         tests: [unique, not_null]
       - name: tipo_bancada
-        description: Nulo quando a bancada não está em editorial.bancada_partido.
+        description: partido, federacao, bloco ou lideranca. Vem de editorial.bancada_partido.
         tests:
           - not_null:
               config:
                 severity: error
       - name: orientacao
+        description: sim, nao, obstrucao ou liberado (cada deputado vota como quiser).
         tests:
           - accepted_values:
               values: [sim, nao, obstrucao, liberado]
 
   - name: orientacao_partido
+    description: >
+      Orientação que valeu para cada partido em cada votação nominal. Prioridade: a do próprio
+      partido, depois a da federação, depois a do bloco.
     columns:
       - name: orientacao_partido_id
         tests: [unique, not_null]
+      - name: fonte_origem
+        description: De onde veio a composição do bloco usado (nome, api ou inferido).
