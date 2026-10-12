@@ -27,16 +27,18 @@ O pipeline roda todo dia às 04:00 (Brasília) via cron (`deploy/cron-coletor`).
 
 ## Publicação
 
-O nginx (`deploy/nginx/site.conf`) é a única porta aberta para a internet (80). Ele aceita só GET/HEAD,
-limita acessos por IP (10/s na API, 30/s no site), envia cabeçalhos de segurança (CSP, sem embutir em
-outros sites) e repassa para a API. Banco e API escutam só em `127.0.0.1`. O site público não chama a
-IA, então visitas não geram custo de API.
+No ar em **https://nacamara.duckdns.org**.
 
-Pendente: domínio e HTTPS.
+O nginx (`deploy/nginx/`) é a única entrada pela internet (portas 80 e 443). A 80 só redireciona para
+HTTPS e atende o desafio do Let's Encrypt. O certificado é emitido pelo serviço `certbot` e renovado
+pelo cron (`deploy/cron-certbot`). O nginx aceita só GET/HEAD,
+limita acessos por IP (10/s na API, 30/s no site), envia cabeçalhos de segurança (CSP, sem embutir em
+outros sites, HSTS) e repassa para a API. Banco e API escutam só em `127.0.0.1`. O site público não chama a
+IA, então visitas não geram custo de API.
 
 ## Documentação dos dados
 
-`http://<servidor>/dados/`: documentação gerada pelo dbt a cada execução do pipeline, com todas as
+https://nacamara.duckdns.org/dados/: documentação gerada pelo dbt a cada execução do pipeline, com todas as
 tabelas, colunas, descrições, testes e o diagrama de linhagem (de qual arquivo da Câmara cada tabela
 vem e quais dependem dela). As descrições ficam nos arquivos `_*.yml` de `transform/models/`.
 

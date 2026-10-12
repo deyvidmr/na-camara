@@ -63,16 +63,29 @@ services:
   web:
     image: nginx:1.27-alpine
     restart: unless-stopped
-    # Única porta aberta para a internet.
+    # Únicas portas abertas para a internet (80 só redireciona para HTTPS e atende o Let's Encrypt).
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       # a pasta inteira (não o arquivo), para edições aparecerem no container
       - ./deploy/nginx:/etc/nginx/conf.d:ro
       - dbt_docs:/usr/share/nginx/dados:ro
+      - certbot_www:/var/www/certbot:ro
+      - letsencrypt:/etc/letsencrypt:ro
     depends_on:
       - api
     mem_limit: 64m
+
+  # Certificado HTTPS (Let's Encrypt), validado pela porta 80 do nginx.
+  # Renovação pelo cron: docker compose run --rm certbot renew
+  certbot:
+    image: certbot/certbot:v3.0.1
+    volumes:
+      - certbot_www:/var/www/certbot
+      - letsencrypt:/etc/letsencrypt
+    mem_limit: 128m
+    profiles: ["certbot"]
 
   api:
     build: ./api
@@ -106,6 +119,8 @@ services:
     profiles: ["coleta"]
 
 volumes:
+  certbot_www:
+  letsencrypt:
   dbt_docs:
   pgdata:
   downloads:

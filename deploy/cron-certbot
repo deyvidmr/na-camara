@@ -1,0 +1,5 @@
+# Renovação do certificado HTTPS: duas vezes por semana (o certbot só renova quando faltam menos de 30 dias).
+# Depois recarrega o nginx para ele usar o certificado novo. Instalar: cp deploy/cron-certbot /etc/cron.d/projeto-certbot
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+30 5 * * 1,4 root cd /opt/projeto && { docker compose run --rm certbot renew --quiet && docker compose exec -T web nginx -s reload; } >> /var/log/projeto-certbot.log 2>&1
