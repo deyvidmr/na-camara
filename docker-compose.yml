@@ -56,13 +56,26 @@ services:
     # Ex.: docker compose run --rm dbt build
     profiles: ["coleta"]
 
+  web:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    # Única porta aberta para a internet.
+    ports:
+      - "80:80"
+    volumes:
+      # a pasta inteira (não o arquivo), para edições aparecerem no container
+      - ./deploy/nginx:/etc/nginx/conf.d:ro
+    depends_on:
+      - api
+    mem_limit: 64m
+
   api:
     build: ./api
     restart: unless-stopped
     env_file: .env
     environment:
       POSTGRES_HOST: db
-    # Como o banco, só acessível de dentro do servidor até existir um site.
+    # Para testes locais; o acesso público passa pelo nginx (serviço web).
     ports:
       - "127.0.0.1:8000:8000"
     depends_on:

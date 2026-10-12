@@ -25,6 +25,15 @@ O pipeline roda todo dia às 04:00 (Brasília) via cron (`deploy/cron-coletor`).
    com modelo, versão do prompt e campo de revisão humana.
 5. dbt de novo.
 
+## Publicação
+
+O nginx (`deploy/nginx/site.conf`) é a única porta aberta para a internet (80). Ele aceita só GET/HEAD,
+limita acessos por IP (10/s na API, 30/s no site), envia cabeçalhos de segurança (CSP, sem embutir em
+outros sites) e repassa para a API. Banco e API escutam só em `127.0.0.1`. O site público não chama a
+IA, então visitas não geram custo de API.
+
+Pendente: domínio e HTTPS.
+
 ## Site
 
 HTML, CSS e JavaScript sem framework (`api/site/`), servidos pela própria API. A jornada:
